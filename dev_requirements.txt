@@ -1,0 +1,46 @@
+# ----------------------------
+# Core Django
+# ----------------------------
+Django>=4.2,<5.0
+djangorestframework>=3.15
+django-filter>=24.2
+django-cors-headers>=4.3
+
+# ----------------------------
+# Auth & Security
+# ----------------------------
+djangorestframework-simplejwt>=5.3
+python-dotenv>=1.0
+passlib[bcrypt]>=1.7
+
+# ----------------------------
+# Database
+# ----------------------------
+psycopg2-binary>=2.9
+
+# ----------------------------
+# Background Tasks & Cache
+# ----------------------------
+redis>=5.0
+celery>=5.3
+django-celery-beat>=2.6
+
+# ----------------------------
+# File & Media Handling
+# ----------------------------
+Pillow>=10.0
+django-storages>=1.14
+boto3>=1.34   # for S3 / compatible storage
+
+# ----------------------------
+# API Utils
+# ----------------------------
+drf-spectacular>=0.27   # OpenAPI / Swagger
+requests>=2.31
+
+# ----------------------------
+# Dev & Debug (optional but useful)
+# ----------------------------
+django-debug-toolbar>=4.2
+ipython>=8.20
+twilio>=9.0
