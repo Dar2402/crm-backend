@@ -1,4 +1,7 @@
 from django.urls import path
+
+from .views_auth import OpsLoginView
+
 from .views import (
     DashboardSummaryView,
     BookingsByStageView,
@@ -7,8 +10,21 @@ from .views import (
     OpsCandidatesView,
     ExportBookingsCSV,
 )
+from .views_workflow import (
+    MoveBookingStageView,
+    RejectBookingView,
+    DeployBookingView,
+)
+
+from .views_analytics import (
+    FunnelAnalyticsView,
+    AvgStageTimeView,
+    TimeToDeployView,
+)
+
 
 urlpatterns = [
+    path("auth/login/", OpsLoginView.as_view()),
     path("dashboard/summary/", DashboardSummaryView.as_view()),
     path("dashboard/bookings-by-stage/", BookingsByStageView.as_view()),
     path("dashboard/booking-trend/", BookingTrendView.as_view()),
@@ -17,4 +33,12 @@ urlpatterns = [
     path("data/candidates/", OpsCandidatesView.as_view()),
 
     path("export/bookings/", ExportBookingsCSV.as_view()),
+
+    path("bookings/<int:pk>/move-stage/", MoveBookingStageView.as_view()),
+    path("bookings/<int:pk>/reject/", RejectBookingView.as_view()),
+    path("bookings/<int:pk>/deploy/", DeployBookingView.as_view()),
+    path("analytics/funnel/", FunnelAnalyticsView.as_view()),
+    path("analytics/avg-stage-time/", AvgStageTimeView.as_view()),
+    path("analytics/time-to-deploy/", TimeToDeployView.as_view()),
 ]
+
