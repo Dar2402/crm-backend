@@ -30,8 +30,8 @@ SECRET_KEY = 'django-insecure-+1+sxb2xi_#dfoqfcn-%oqln8!*sqi-vvyf48lsz=g_vi3th3f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["https://*.ngrok-free.app"]
+ALLOWED_HOSTS = ["*.ngrok-free.app"]
+
 
 # Application definition
 
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "apps.candidates",
     "apps.bookings",
     "apps.payments",
-    "apps.ops",
 ]
 
 MIDDLEWARE = [
@@ -180,7 +179,3 @@ MAX_ATTEMPTS = int(
     3
 )
 )
-
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
-RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET")

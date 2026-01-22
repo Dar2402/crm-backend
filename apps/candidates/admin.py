@@ -36,7 +36,7 @@ class CandidateMedicalInline(admin.StackedInline):
 
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "nationality", "applied_for", "status", "price_sar")
+    list_display = ("id", "full_name", "nationality", "applied_for", "status", "price_sar")
     search_fields = ("full_name", "nationality", "applied_for")
     list_filter = ("status", "nationality")
 

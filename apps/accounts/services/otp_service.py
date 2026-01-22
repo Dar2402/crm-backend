@@ -20,8 +20,7 @@ def _hash(otp: str):
     return hashlib.sha256(otp.encode()).hexdigest()
 
 
-def store_otp(phone, otp):
-    # delete old OTPs for this phone
+def store_otp(phone, otp):    # delete old OTPs for this phone
     PhoneOTP.objects.filter(phone=phone).delete()
 
     PhoneOTP.objects.create(

@@ -18,7 +18,6 @@ class CreateBookingView(APIView):
         candidate_id = serializer.validated_data["candidate_id"]
         candidate = get_object_or_404(Candidate, id=candidate_id, status="available")
 
-        # prevent duplicate active booking
         if Booking.objects.filter(user=request.user, candidate=candidate, status="active").exists():
             return Response(
                 {"detail": "Already booked this candidate"},
