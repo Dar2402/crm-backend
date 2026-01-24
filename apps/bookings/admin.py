@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from .models import Booking, ApplicationStage, StageHistory
+from .services.workflow import BookingWorkflowService
 
 
 class StageHistoryInline(admin.TabularInline):
@@ -19,28 +21,14 @@ class BookingAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if change:
             old_obj = Booking.objects.get(pk=obj.pk)
-            old_stage = old_obj.current_stage
-            new_stage = obj.current_stage
-
-            if old_stage != new_stage:
-
-                StageHistory.objects.create(
+            if old_obj.current_stage != obj.current_stage:
+                BookingWorkflowService.move_stage(
                     booking=obj,
-                    stage=new_stage,
+                    new_stage=obj.current_stage,
                     remarks=f"Stage changed by admin {request.user.username}",
                 )
-
-
-                if new_stage.name.lower() == "medical":
-                    obj.candidate.status = "booked"
-                elif new_stage.name.lower() == "deployed":
-                    obj.candidate.status = "deployed"
-                elif new_stage.name.lower() == "rejected":
-                    obj.status = "rejected"
-
-                obj.candidate.save(update_fields=["status"])
-
-        super().save_model(request, obj, form, change)
+        else:
+            super().save_model(request, obj, form, change)
 
 
 @admin.register(ApplicationStage)

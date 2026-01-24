@@ -1,11 +1,13 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, permissions
-from django.shortcuts import get_object_or_404
-
-from .models import Booking, ApplicationStage, StageHistory
 from apps.candidates.models import Candidate
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+from rest_framework import status, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .models import Booking
 from .serializers import BookingCreateSerializer, BookingListSerializer, StageHistorySerializer
+from .services.workflow import BookingWorkflowService
 
 
 class CreateBookingView(APIView):
@@ -15,34 +17,21 @@ class CreateBookingView(APIView):
         serializer = BookingCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        candidate_id = serializer.validated_data["candidate_id"]
-        candidate = get_object_or_404(Candidate, id=candidate_id, status="available")
-
-        if Booking.objects.filter(user=request.user, candidate=candidate, status="active").exists():
+        try:
+            booking = BookingWorkflowService.create_booking(
+                user=request.user,
+                candidate_id=serializer.validated_data["candidate_id"],
+            )
+        except ValidationError as e:
             return Response(
-                {"detail": "Already booked this candidate"},
+                {"detail": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        first_stage = ApplicationStage.objects.order_by("order").first()
-
-        booking = Booking.objects.create(
-            user=request.user,
-            candidate=candidate,
-            current_stage=first_stage,
+        return Response(
+            {"detail": "Booking created", "booking_id": booking.id},
+            status=status.HTTP_201_CREATED,
         )
-
-        if first_stage:
-            StageHistory.objects.create(
-                booking=booking,
-                stage=first_stage,
-                remarks="Application submitted",
-            )
-
-        candidate.status = "booked"
-        candidate.save(update_fields=["status"])
-
-        return Response({"detail": "Booking created", "booking_id": booking.id})
 
 
 class MyBookingsView(APIView):

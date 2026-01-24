@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -37,6 +38,37 @@ class Candidate(models.Model):
 
     def __str__(self):
         return self.full_name
+
+    def clean(self):
+        """
+        Enforce candidate-booking consistency
+        """
+        super().clean()
+
+        active_bookings = self.bookings.filter(status="active").count()
+        completed_bookings = self.bookings.filter(status="completed").count()
+
+        if self.status == "available":
+            if active_bookings > 0:
+                raise ValidationError(
+                    "Available candidate cannot have active bookings"
+                )
+
+        if self.status == "booked":
+            if active_bookings != 1:
+                raise ValidationError(
+                    "Booked candidate must have exactly one active booking"
+                )
+
+        if self.status == "deployed":
+            if completed_bookings != 1:
+                raise ValidationError(
+                    "Deployed candidate must have exactly one completed booking"
+                )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 class CandidatePhoto(models.Model):

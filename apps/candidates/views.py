@@ -1,5 +1,5 @@
-from rest_framework import generics, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, filters, permissions
 
 from .models import Candidate
 from .serializers import CandidateListSerializer, CandidateDetailSerializer
@@ -19,6 +19,7 @@ class CandidateListView(generics.ListAPIView):
 
 
 class CandidateDetailView(generics.RetrieveAPIView):
+    permission_classes = [permissions.AllowAny]
     queryset = Candidate.objects.all().prefetch_related(
         "photos", "experiences", "skills"
     ).select_related("passport", "medical")
