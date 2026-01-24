@@ -1,14 +1,25 @@
 from apps.bookings.models import Booking, ApplicationStage, StageHistory
+from apps.bookings.serializers import StageSerializer
 from apps.bookings.services.workflow import BookingWorkflowService
 from apps.candidates.models import Candidate
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .permissions import IsStaff, IsAdmin
 from .serializers import MoveStageSerializer
+
+
+class OpsApplicationStageListView(APIView):
+    permission_classes = [IsAuthenticated, IsStaff]
+
+    def get(self, request):
+        stages = ApplicationStage.objects.order_by("order")
+        serializer = StageSerializer(stages, many=True)
+        return Response(serializer.data)
 
 
 class MoveBookingStageView(APIView):

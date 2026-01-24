@@ -1,7 +1,5 @@
 from django.urls import path
 
-from .views_auth import OpsLoginView
-
 from .views import (
     DashboardSummaryView,
     BookingsByStageView,
@@ -10,18 +8,18 @@ from .views import (
     OpsCandidatesView,
     ExportBookingsCSV,
 )
-from .views_workflow import (
-    MoveBookingStageView,
-    RejectBookingView,
-    DeployBookingView,
-)
-
 from .views_analytics import (
     FunnelAnalyticsView,
     AvgStageTimeView,
     TimeToDeployView,
 )
-
+from .views_auth import OpsLoginView
+from .views_workflow import (
+    MoveBookingStageView,
+    RejectBookingView,
+    DeployBookingView,
+    OpsApplicationStageListView
+)
 
 urlpatterns = [
     path("auth/login/", OpsLoginView.as_view()),
@@ -40,5 +38,5 @@ urlpatterns = [
     path("analytics/funnel/", FunnelAnalyticsView.as_view()),
     path("analytics/avg-stage-time/", AvgStageTimeView.as_view()),
     path("analytics/time-to-deploy/", TimeToDeployView.as_view()),
+    path("stages/", OpsApplicationStageListView.as_view()),
 ]
-
